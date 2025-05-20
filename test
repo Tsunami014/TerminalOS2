@@ -1,3 +1,4 @@
 #!/bin/bash
 make
+chmod +x ./init
 kitty bash -c './init;echo "";read -p "Program finished! Press enter to continue."'

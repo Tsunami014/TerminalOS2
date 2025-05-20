@@ -4,6 +4,9 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "core/vector.h"
+#include "core/display.h"
+
 struct termios orig_termios;
 
 void disableRawMode() {
@@ -24,13 +27,24 @@ void enableRawMode() {
 
 int main() {
   enableRawMode();
+  printf("\033[2J");
+
+  VECTOR_INIT(v);
 
   char c;
   while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
-    if (iscntrl(c)) {
-      printf("%d\r\n", c);
+    if (c == 0x7F) { // Backspace
+        char* it = v.pfVectorGet(&v, v.pfVectorSize(&v)-1);
+        v.pfVectorPopBack(&v);
+        display(v);
+        printf("Deleted: %c\033[K\r\n\033[K\r\n\033[1A", it);
+    } else if (iscntrl(c)) {
+        display(v);
+        printf("Unknown: %d\033[K\r\n", c);
     } else {
-      printf("%d ('%c')\r\n", c, c);
+        v.pfVectorPushBack(&v, c);
+        display(v);
+        printf("Added: %d ('%c')\r\n", c, c);
     }
   }
 
