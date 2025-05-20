@@ -1,31 +1,10 @@
-#include <stdio.h>
+#include "vector.h"
 
 // Thanks so much to https://aticleworld.com/implement-vector-in-c/ where the original code came from!
 
 #define VECTOR_INIT_CAPACITY 6
 #define UNDEFINE -1
 #define SUCCESS 0
-
-typedef struct VectorList {
-    void **items;
-    int capacity;
-    int total;
-} VectorList;
-//structure contain the function pointer
-typedef struct Vector vector;
-struct Vector
-{
-    VectorList vecList;
-//function pointers
-    int (*pfVectorSize)(vector *);
-    int (*pfVectorResize)(vector *, int);
-    int (*pfVectorPushBack)(vector *, void *);
-    void *(*pfVectorPopBack)(vector *);
-    int (*pfVectorSet)(vector *, int, void *);
-    void *(*pfVectorGet)(vector *, int);
-    int (*pfVectorDelete)(vector *, int);
-    int (*pfVectorFree)(vector *);
-};
 
 int vectorSize(vector *v) {
     int totalCount = UNDEFINE;

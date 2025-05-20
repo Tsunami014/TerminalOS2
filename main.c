@@ -25,9 +25,11 @@ void enableRawMode() {
   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 }
 
-int main() {
+int mainCode() {
   enableRawMode();
+  setvbuf(stdout, NULL, _IONBF, 0); // Disable buffering; we now need to run fflush(stdout); to flush
   printf("\033[2J");
+  fflush(stdout);
 
   VECTOR_INIT(v);
 
@@ -37,7 +39,7 @@ int main() {
         char* it = v.pfVectorGet(&v, v.pfVectorSize(&v)-1);
         v.pfVectorPopBack(&v);
         display(v);
-        printf("Deleted: %c\033[K\r\n\033[K\r\n\033[1A", it);
+        printf("Deleted: %c\033[K\r\n\033[K", it);
     } else if (iscntrl(c)) {
         display(v);
         printf("Unknown: %d\033[K\r\n", c);
@@ -46,8 +48,15 @@ int main() {
         display(v);
         printf("Added: %d ('%c')\r\n", c, c);
     }
+    fflush(stdout);
   }
 
   disableRawMode();
   return 0;
 }
+
+#ifndef WRAPPED_BUILD
+int main(void) {
+    return mainCode();
+}
+#endif

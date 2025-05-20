@@ -1,0 +1,16 @@
+mkdir ./rootfs
+make init
+(cd rootfs && find . | cpio -o -H newc) | gzip > initrd-tos.img
+sudo mv initrd-tos.img /boot/
+sudo tee /etc/grub.d/40_custom > /dev/null <<EOF
+#!/bin/sh
+exec tail -n +3 $0
+
+menuentry "Terminal OS"{
+            search --set=root --file /boot/vmlinuz
+            linux /boot/vmlinuz root=/dev/ram0 rdinit=/init
+            initrd /boot/initrd-tos.img
+}
+EOF
+sudo chmod +x /etc/grub.d/40_custom
+sudo update-grub
