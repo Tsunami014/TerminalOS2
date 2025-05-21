@@ -1,3 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
 make init
 (cd rootfs && find . | cpio -o -H newc) | gzip > initrd-tos.img
 sudo mv initrd-tos.img /boot/

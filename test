@@ -1,3 +1,0 @@
-#!/bin/bash
-make
-kitty bash -c './main;echo "";read -p "Program finished! Press enter to continue."'

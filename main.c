@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
+#include <stdbool.h>
 
+#include "core/io.h"
 #include "core/vector.h"
 #include "core/display.h"
 
@@ -30,27 +32,38 @@ int mainCode() {
   setvbuf(stdout, NULL, _IONBF, 0); // Disable buffering; we now need to run fflush(stdout); to flush
   printf("\033[2J");
   fflush(stdout);
+  
+  keyEventList* events = KeyEventList_INIT();
+
+  IO_init();
 
   VECTOR_INIT(v);
 
-  char c;
-  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
-    if (c == 0x7F) { // Backspace
-        char* it = v.pfVectorGet(&v, v.pfVectorSize(&v)-1);
-        v.pfVectorPopBack(&v);
-        display(v);
-        printf("Deleted: %c\033[K\r\n\033[K", it);
-    } else if (iscntrl(c)) {
-        display(v);
-        printf("Unknown: %d\033[K\r\n", c);
-    } else {
-        v.pfVectorPushBack(&v, c);
-        display(v);
-        printf("Added: %d ('%c')\r\n", c, c);
+  while (true) {
+    IO_poll(events);
+    bool ran = false;
+    while (!KeyEventList_Empty(events)) {
+        bool ran = true;
+        keyEvent* key = KeyEventList_Pop_Front(events);
+        if (key->code == 0x0E) { // Backspace
+            char* it = v.pfVectorGet(&v, v.pfVectorSize(&v)-1);
+            v.pfVectorPopBack(&v);
+            display(v);
+            printf("Deleted: %s\033[K\r\n\033[K", it);
+        } else {
+            v.pfVectorPushBack(&v, key->name);
+            display(v);
+            printf("Added: %s (%d)\r\n", key->name, key->code);
+        }
+        free(key);
     }
-    fflush(stdout);
+    if (ran) {
+        fflush(stdout);
+    }
   }
 
+  IO_stop();
+  KeyEventList_Delete(events);
   disableRawMode();
   return 0;
 }

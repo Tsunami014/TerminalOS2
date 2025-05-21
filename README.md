@@ -1,13 +1,17 @@
 # TerminalOS2
 A terminal operating system... but in C!
 
-# Building and running
-Ensure that libevdev-dev is installed: `sudo apt install libevdev-dev`
+# Dependancies
+```bash
+sudo apt-get install pkg-config # for building
+sudo apt install libevdev-dev
+```
 
+# Building and running
 - To build into an executable:
     - `make main`: Makes the main file into an executable `./main`
     - `make clean`: Removes all output from make and build and test
-- To test: (build and launch program in kitty (ensure it's installed)): `./test`
+- `make test`: Makes the main file into an executable and then runs it in kitty (ensure installed)
 
 I suggest a good way to get a real feel for it without making it it's own OS is to use a virtual terminal.
 

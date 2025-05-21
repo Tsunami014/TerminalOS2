@@ -1,15 +1,28 @@
 # Compile these files too!
 CORE = core/display.c core/display.h \
+	   core/io.c core/io.h \
        core/vector.c core/vector.h
 
-# Default target: compile and link the program
-main:
+CFLAGS = -Wall -g -static $(shell pkg-config --cflags libevdev)
+LDFLAGS = $(shell pkg-config --libs libevdev)
+
+# — Create the main file —————————————————————————————————————————————
+main: Makefile main.c $(CORE)
 	rm -f main
-	gcc -Wall -g -static -o main main.c $(CORE)
+	gcc $(CFLAGS) -o main main.c $(CORE) $(LDFLAGS)
 	chmod +x ./main
-init:
+
+# — Create the init file —————————————————————————————————————————————
+init: Makefile init.c main.c $(CORE)
 	rm -f ./rootfs/init
-	gcc -Wall -g -static -o rootfs/init main.c $(CORE)
+	gcc $(CFLAGS) -DWRAPPED_BUILD -o rootfs/init init.c main.c $(CORE) $(LDFLAGS)
 	chmod +x ./rootfs/init
+
+# — Convenience: run under kitty and pause at end ————————————————————
+test: main
+	@kitty bash -c './main; echo; read -p "Program finished! Press enter to continue."'
+
+# — Clean out everything —————————————————————————————————————————————
 clean:
 	rm -f main
+	rm -f ./rootfs/init

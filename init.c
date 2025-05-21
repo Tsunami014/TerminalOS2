@@ -2,9 +2,13 @@
 #include <stdio.h>
 #include <sys/mount.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <sys/sysmacros.h>
 
-#define WRAPPED_BUILD
-#include "main.c"
+extern int mainCode();
 
 // Function to create /dev/input/event* device files
 void create_input_devices() {

@@ -1,3 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
 mkdir ./rootfs
 make init
 (cd rootfs && find . | cpio -o -H newc) | gzip > initrd-tos.img
