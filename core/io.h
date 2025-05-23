@@ -23,15 +23,20 @@ typedef struct KeyEvent keyEvent;
 struct KeyEvent {
     int code;
     int state; // 1 = key press, 2 = key held, 0 = key release
-    char* name;
+    const char* name;
     keyEvent* nextEvent;
 };
 keyEvent* KeyEvent_INIT(int code, int state);
 
-typedef struct KeyEventList {
+typedef struct KeyEventList keyEventList;
+struct KeyEventList {
     keyEvent* start;
     keyEvent* end; // BE CAREFUL; THIS MAY BE NOT NULL WHEN THE LIST IS EMPTY; ONLY CHECK start WHEN CHECKING FOR ELEMENTS IN THE LIST
-} keyEventList;
+
+    // Function pointers
+    keyEvent* (*pfPopFront)(keyEventList*);
+};
+
 keyEventList* KeyEventList_INIT();
 bool KeyEventList_Empty(keyEventList* l);
 void KeyEventList_Steal_into(keyEventList* orig, keyEventList* into);

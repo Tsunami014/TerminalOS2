@@ -1,3 +1,4 @@
 main
 rootfs/*
 initrd-tos.img
+.vscode/settings.json

@@ -71,15 +71,6 @@ keyEvent* KeyEvent_INIT(int code, int state) {
     return key;
 }
 
-keyEventList* KeyEventList_INIT() {
-    keyEventList *key = malloc(sizeof(keyEventList));
-    if (key == NULL) {
-        return NULL;
-    }
-    key->start = NULL;
-    key->end = NULL;
-    return key;
-}
 bool KeyEventList_Empty(keyEventList* l) {
     return l->start == NULL;
 }
@@ -110,6 +101,16 @@ void KeyEventList_Delete(keyEventList* l) {
         free(key);
     }
 }
+keyEventList* KeyEventList_INIT() {
+    keyEventList *keyl = malloc(sizeof(keyEventList));
+    if (keyl == NULL) {
+        return NULL;
+    }
+    keyl->start = NULL;
+    keyl->end = NULL;
+    keyl->pfPopFront = KeyEventList_Pop_Front;
+    return keyl;
+}
 
 static keyEventList* KeyEventReaderList = NULL;
 
@@ -129,7 +130,7 @@ static void scan_devices() {
         if (strncmp(entry->d_name, "event", 5) != 0) continue;
 
         char path[256];
-        snprintf(path, sizeof(path), "/dev/input/%s", entry->d_name);
+        snprintf(path, sizeof(path), "/dev/input/%.243s", entry->d_name);
 
         int fd = open(path, O_RDONLY | O_NONBLOCK);
         if (fd < 0) continue;

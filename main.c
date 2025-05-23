@@ -6,6 +6,8 @@
 #include <stdbool.h>
 
 #include "core/io.h"
+#include "core/display.h"
+#include "core/layout.h"
 
 struct termios orig_termios;
 
@@ -33,6 +35,8 @@ int mainCode() {
   keyEventList* events = KeyEventList_INIT();
 
   IO_init();
+  
+  LAYOUT_INIT(lay, 10, 10);
 
   while (true) {
     IO_poll(events);

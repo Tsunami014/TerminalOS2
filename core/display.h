@@ -1,5 +1,5 @@
-#ifndef CORE_DISPLAY_H
-#define CORE_DISPLAY_H
+#ifndef DISPLAY_H
+#define DISPLAY_H
 
 #include "io.h"
 
