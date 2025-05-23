@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "name": "Build & Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/main",
+            "args": [],
+            "cwd": "${fileDirname}",
+            "externalConsole": true,
+            "preLaunchTask": "Build"
+        }
+    ],
+}

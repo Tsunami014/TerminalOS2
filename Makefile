@@ -1,7 +1,6 @@
 # Compile these files too!
 CORE = core/display.c core/display.h \
-	   core/io.c core/io.h \
-       core/vector.c core/vector.h
+	   core/io.c core/io.h
 
 CFLAGS = -Wall -g -static $(shell pkg-config --cflags libevdev)
 LDFLAGS = $(shell pkg-config --libs libevdev)

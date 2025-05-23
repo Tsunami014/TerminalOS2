@@ -6,8 +6,6 @@
 #include <stdbool.h>
 
 #include "core/io.h"
-#include "core/vector.h"
-#include "core/display.h"
 
 struct termios orig_termios;
 
@@ -29,7 +27,6 @@ void enableRawMode() {
 
 int mainCode() {
   enableRawMode();
-  setvbuf(stdout, NULL, _IONBF, 0); // Disable buffering; we now need to run fflush(stdout); to flush
   printf("\033[2J");
   fflush(stdout);
   
@@ -37,29 +34,10 @@ int mainCode() {
 
   IO_init();
 
-  VECTOR_INIT(v);
-
   while (true) {
     IO_poll(events);
-    bool ran = false;
-    while (!KeyEventList_Empty(events)) {
-        bool ran = true;
-        keyEvent* key = KeyEventList_Pop_Front(events);
-        if (key->code == 0x0E) { // Backspace
-            char* it = v.pfVectorGet(&v, v.pfVectorSize(&v)-1);
-            v.pfVectorPopBack(&v);
-            display(v);
-            printf("Deleted: %s\033[K\r\n\033[K", it);
-        } else {
-            v.pfVectorPushBack(&v, key->name);
-            display(v);
-            printf("Added: %s (%d)\r\n", key->name, key->code);
-        }
-        free(key);
-    }
-    if (ran) {
-        fflush(stdout);
-    }
+    display(events);
+    Flush();
   }
 
   IO_stop();
@@ -70,6 +48,6 @@ int mainCode() {
 
 #ifndef WRAPPED_BUILD
 int main(void) {
-    return mainCode();
+  return mainCode();
 }
 #endif

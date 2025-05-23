@@ -1,8 +1,13 @@
 #ifndef CORE_DISPLAY_H
 #define CORE_DISPLAY_H
 
-#include "vector.h"
+#include "io.h"
 
-void display(vector list);
+void Print(const char *str);
+void PrintF(const char *fmt, ...);
+void PrintC(const char c);
+void Flush();
+
+void display(keyEventList* evs);
 
 #endif

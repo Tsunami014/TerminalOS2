@@ -11,8 +11,11 @@ sudo apt install libevdev-dev
 - To build into an executable:
     - `make main`: Makes the main file into an executable `./main`
     - `make clean`: Removes all output from make and build and test
+## Testing
+- If you use VSCode, there's a launch configuration setup for this
 - `make test`: Makes the main file into an executable and then runs it in kitty (ensure installed)
 
+## Virtual terminal usage
 I suggest a good way to get a real feel for it without making it it's own OS is to use a virtual terminal.
 
 To use this in the virtual terminal, press <kbd>ctrl</kbd>+<kbd>alt</kbd>+<kbd>F1-12</kbd> and sign in. Then run the script as you would in a normal terminal; `./main` (after `make main`).

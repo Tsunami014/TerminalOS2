@@ -3,6 +3,16 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+
+typedef uint64_t KeyPressBitMask[4];
+extern KeyPressBitMask* KEYSPRESSED;
+bool IsKeyPressed(int code);
+typedef struct PressedKeysList {
+    int* start;
+    int length;
+} pressedKeysList;
+pressedKeysList* GetPressedKeys();
 
 typedef struct {
     int fd; // File descriptor
@@ -12,11 +22,11 @@ typedef struct {
 typedef struct KeyEvent keyEvent;
 struct KeyEvent {
     int code;
-    int value; // 1 = key press, 0 = key release
+    int state; // 1 = key press, 2 = key held, 0 = key release
     char* name;
     keyEvent* nextEvent;
 };
-keyEvent* KeyEvent_INIT(int code, int value);
+keyEvent* KeyEvent_INIT(int code, int state);
 
 typedef struct KeyEventList {
     keyEvent* start;
@@ -27,7 +37,7 @@ bool KeyEventList_Empty(keyEventList* l);
 void KeyEventList_Steal_into(keyEventList* orig, keyEventList* into);
 void KeyEventList_Push_Back(keyEventList* l, keyEvent* add);
 keyEvent* KeyEventList_Pop_Front(keyEventList* l);
-void KeyEventList_Delete(keyEventList* l); // Delete and free list and all contents
+void KeyEventList_Delete(keyEventList* l); // Delete and free contents of list
 
 void IO_init();
 void IO_poll(keyEventList* pollInto);
